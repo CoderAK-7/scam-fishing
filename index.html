@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>PhishGuard AI — Advanced Client-Side Email Scam & Phishing Detection</title>
+  <meta name="description" content="100% private in-browser email scam, phishing, and spoofing detection suite. No data leaves your machine.">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="theme-dark">
+  <!-- Top Application Bar -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand">
+        <div class="brand-shield">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="M9 12l2 2 4-4"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <div class="brand-title">PhishGuard <span class="badge-version">PRO v2.4</span></div>
+          <div class="brand-subtitle">Client-Side Threat Intelligence & Scam Detector</div>
+        </div>
+      </div>
+
+      <div class="header-meta">
+        <div class="privacy-pill" title="All processing occurs locally in your browser sandbox. No email content is transmitted anywhere.">
+          <span class="pulse-dot"></span>
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+          <span class="privacy-label">100% Zero-Cloud / Browser Only</span>
+        </div>
+
+        <button id="themeToggleBtn" class="btn-icon" aria-label="Toggle dark/light theme" title="Toggle Theme">
+          <svg id="themeIcon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Viewport -->
+  <main class="app-layout">
+    <!-- Left / Top Column: Input & Controls -->
+    <section class="panel input-panel">
+      <div class="panel-header">
+        <div class="panel-title-wrap">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+            <polyline points="22,6 12,13 2,6"></polyline>
+          </svg>
+          <h2>Email Analysis Ingestion</h2>
+        </div>
+
+        <!-- Mode Toggle Tabs -->
+        <div class="input-mode-tabs" role="tablist">
+          <button class="mode-tab active" data-mode="full" id="tabFull">Full RFC / Raw</button>
+          <button class="mode-tab" data-mode="body" id="tabBody">Body Only</button>
+          <button class="mode-tab" data-mode="fields" id="tabFields">Structured</button>
+        </div>
+      </div>
+
+      <!-- Quick Preset Loaders -->
+      <div class="presets-bar">
+        <span class="presets-label">Load Test Case:</span>
+        <div class="preset-chips-scroll">
+          <button class="preset-chip" data-sample="paypal">⚠️ PayPal Suspension</button>
+          <button class="preset-chip" data-sample="ceo_bec">👔 CEO Wire (BEC)</button>
+          <button class="preset-chip" data-sample="geeksquad">🧾 GeekSquad Invoice</button>
+          <button class="preset-chip" data-sample="dhl_malware">📦 DHL Shipment Mal</button>
+          <button class="preset-chip" data-sample="m365_phish">🔑 M365 Password</button>
+          <button class="preset-chip safe" data-sample="github_safe">✅ Safe GitHub Alert</button>
+        </div>
+      </div>
+
+      <!-- File Drop Area -->
+      <div id="dropZone" class="file-dropzone">
+        <input type="file" id="fileInput" accept=".eml,.txt,.msg,.html" class="visually-hidden">
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="17 8 12 3 7 8"></polyline>
+          <line x1="12" y1="3" x2="12" y2="15"></line>
+        </svg>
+        <div class="drop-text">
+          <span>Drag & Drop <strong>.eml</strong> or <strong>.txt</strong> email file</span>
+          <span class="drop-sub">or <button type="button" class="btn-link" id="browseFileBtn">browse files</button></span>
+        </div>
+      </div>
+
+      <!-- Form Inputs: Full / Body Mode -->
+      <div id="rawInputContainer" class="input-container">
+        <label for="emailRawInput" class="input-label">
+          <span>Raw Email Content (Headers & Body)</span>
+          <button id="clearBtn" class="btn-text">Clear</button>
+        </label>
+        <textarea id="emailRawInput" class="code-textarea" placeholder="Paste full email RFC headers and body here, or use one of the preset sample buttons above...
+Example:
+From: 'PayPal Service' <security-update@paypa1-support.com>
+Reply-To: phisher99@gmail.com
+Subject: URGENT: Your PayPal account has been limited!
+Date: Thu, 31 Oct 2026 18:22:01 +0000
+
+Dear Valued Customer,
+Your account has suspicious activity. Click here to confirm your password:
+http://185.122.9.22/paypal/verify.php
+Failure to verify within 24 hours will result in permanent suspension." spellcheck="false"></textarea>
+      </div>
+
+      <!-- Structured Fields Mode (Hidden by default) -->
+      <div id="structuredInputContainer" class="structured-container" style="display: none;">
+        <div class="field-row">
+          <div class="field-col">
+            <label for="structSender">From (Name & Email)</label>
+            <input type="text" id="structSender" placeholder="e.g. Netflix Support <billing@netfllix.com>">
+          </div>
+          <div class="field-col">
+            <label for="structReplyTo">Reply-To (Optional)</label>
+            <input type="text" id="structReplyTo" placeholder="e.g. payout99@mail.ru">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field-col">
+            <label for="structSubject">Subject Line</label>
+            <input type="text" id="structSubject" placeholder="e.g. Immediate action required: Verify payment details">
+          </div>
+          <div class="field-col">
+            <label for="structDate">Date / Auth Headers</label>
+            <input type="text" id="structDate" placeholder="e.g. dkim=fail; spf=softfail">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field-col full">
+            <label for="structBody">Email Body (Text or HTML)</label>
+            <textarea id="structBody" rows="7" placeholder="Paste email message text or HTML content..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Toolbar -->
+      <div class="action-toolbar">
+        <button id="analyzeBtn" class="btn btn-primary">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            <line x1="11" y1="8" x2="11" y2="14"></line>
+            <line x1="8" y1="11" x2="14" y2="11"></line>
+          </svg>
+          Run Deep Scam Analysis
+        </button>
+
+        <button id="exportReportBtn" class="btn btn-secondary" title="Export JSON Security Report">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Export Report
+        </button>
+      </div>
+
+      <!-- Engine Badges -->
+      <div class="engine-features-footer">
+        <span class="engine-tag" title="Detects unicode lookalike characters in domains">Homoglyph / Punycode</span>
+        <span class="engine-tag" title="Identifies domain impersonation against 60+ top brands">Typo-Squatting</span>
+        <span class="engine-tag" title="Detects display name spoofing and envelope mismatch">Sender Spoofing</span>
+        <span class="engine-tag" title="Discovers hidden target URLs behind benign text">URL Target Mismatch</span>
+        <span class="engine-tag" title="Scores urgency, blackmail, financial coercion, BEC">NLP Threat Vectors</span>
+      </div>
+    </section>
+
+    <!-- Right / Bottom Column: Comprehensive Analysis Dashboard -->
+    <section class="panel results-panel" id="resultsPanel">
+      <!-- Empty State (Shown before scan) -->
+      <div id="resultsEmptyState" class="empty-state">
+        <div class="empty-icon-box">
+          <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="M12 8v4"/>
+            <path d="M12 16h.01"/>
+          </svg>
+        </div>
+        <h3>No Email Scanned Yet</h3>
+        <p>Paste email text or choose one of the sample threats above, then click <strong>"Run Deep Scam Analysis"</strong>.</p>
+        <div class="quick-tips-card">
+          <h4>What PhishGuard Inspects:</h4>
+          <ul>
+            <li><strong>Header & Envelope Authenticity:</strong> Sender name spoofing, Reply-To discrepancy, Return-Path validation.</li>
+            <li><strong>Domain Safety:</strong> Levenshtein typo-squats, Cyrillic lookalikes (e.g. <code>pаypal</code> vs <code>paypal</code>), free webmail masquerades.</li>
+            <li><strong>Hidden Hyperlink Traps:</strong> Discrepancies between shown text and real destination, IP URLs, suspicious TLDs.</li>
+            <li><strong>Social Engineering:</strong> Panic deadlines, CEO wire fraud, credential harvesting, extortion.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Active Report View (Shown after scan) -->
+      <div id="resultsActiveView" class="results-view" style="display: none;">
+        <!-- Top Score Bar Card -->
+        <div class="risk-hero-card" id="riskHeroCard">
+          <div class="gauge-column">
+            <div class="circular-gauge" id="scoreGauge">
+              <svg viewBox="0 0 100 100" class="gauge-svg">
+                <circle class="gauge-bg" cx="50" cy="50" r="42" />
+                <circle class="gauge-progress" id="gaugeProgressCircle" cx="50" cy="50" r="42" />
+              </svg>
+              <div class="gauge-inner">
+                <span id="scoreValue" class="gauge-number">0</span>
+                <span class="gauge-unit">/ 100</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-details">
+            <div class="verdict-line">
+              <span id="riskVerdictBadge" class="verdict-badge">SAFE</span>
+              <span id="threatLevelSubtext" class="verdict-title">No Phishing Indicators Detected</span>
+            </div>
+            <p id="riskSummaryDesc" class="verdict-desc">The analyzed message does not show typical scam or spoofing vectors.</p>
+            
+            <div class="quick-meta-grid">
+              <div class="meta-item">
+                <span class="meta-label">Sender Authenticity:</span>
+                <span id="metaSenderAuth" class="meta-val">Verified</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">Hyperlinks Analyzed:</span>
+                <span id="metaLinksCount" class="meta-val">0</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">Urgency Score:</span>
+                <span id="metaUrgencyScore" class="meta-val">Low</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">Overall Recommendation:</span>
+                <span id="metaActionNotice" class="meta-val text-safe">Safe to open</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Breakdown Vector Bars -->
+        <div class="vector-bars-card">
+          <h4 class="section-title">Threat Vector Breakdown</h4>
+          <div class="vector-grid">
+            <div class="vector-item">
+              <div class="vector-header">
+                <span>Sender & Domain Spoofing</span>
+                <span id="vecSenderScore">0%</span>
+              </div>
+              <div class="bar-track"><div id="vecSenderBar" class="bar-fill" style="width: 0%"></div></div>
+            </div>
+
+            <div class="vector-item">
+              <div class="vector-header">
+                <span>Malicious Links & Redirection</span>
+                <span id="vecLinksScore">0%</span>
+              </div>
+              <div class="bar-track"><div id="vecLinksBar" class="bar-fill" style="width: 0%"></div></div>
+            </div>
+
+            <div class="vector-item">
+              <div class="vector-header">
+                <span>Psychological Pressure & Urgency</span>
+                <span id="vecUrgencyScore">0%</span>
+              </div>
+              <div class="bar-track"><div id="vecUrgencyBar" class="bar-fill" style="width: 0%"></div></div>
+            </div>
+
+            <div class="vector-item">
+              <div class="vector-header">
+                <span>Financial & Credential Traps</span>
+                <span id="vecCredScore">0%</span>
+              </div>
+              <div class="bar-track"><div id="vecCredBar" class="bar-fill" style="width: 0%"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabbed Detail Panels -->
+        <div class="details-tabbed-container">
+          <div class="tab-nav">
+            <button class="nav-tab active" data-tab="findings">
+              Detected Flags (<span id="flagsCount">0</span>)
+            </button>
+            <button class="nav-tab" data-tab="links">
+              Link Inspector (<span id="linksFoundCount">0</span>)
+            </button>
+            <button class="nav-tab" data-tab="headers">
+              Parsed Headers
+            </button>
+            <button class="nav-tab" data-tab="preview">
+              Safe Body Preview
+            </button>
+            <button class="nav-tab" data-tab="guidance">
+              User Defense Steps
+            </button>
+          </div>
+
+          <div class="tab-content-area">
+            <!-- Tab 1: Threat Flags List -->
+            <div id="tabFindings" class="tab-pane active">
+              <div id="findingsList" class="findings-list">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+            <!-- Tab 2: Link Inspector -->
+            <div id="tabLinks" class="tab-pane">
+              <div class="table-responsive">
+                <table class="cyber-table" id="linksTable">
+                  <thead>
+                    <tr>
+                      <th>Status</th>
+                      <th>Visible Text / Anchor</th>
+                      <th>Actual Destination URL</th>
+                      <th>Risk Details</th>
+                    </tr>
+                  </thead>
+                  <tbody id="linksTableBody">
+                    <!-- Dynamically populated -->
+                  </tbody>
+                </table>
+              </div>
+              <div id="linksEmptyMsg" class="empty-sub" style="display: none;">
+                No hyperlinks detected in this email.
+              </div>
+            </div>
+
+            <!-- Tab 3: Parsed Headers -->
+            <div id="tabHeaders" class="tab-pane">
+              <div class="headers-inspector" id="headersGrid">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+            <!-- Tab 4: Safe Body Preview -->
+            <div id="tabPreview" class="tab-pane">
+              <div class="preview-warning">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                <span>Sanitized Sandbox Mode: scripts, remote trackers, and dangerous forms are neutralized.</span>
+              </div>
+              <div id="safePreviewContainer" class="safe-preview-box">
+                <!-- Dynamically rendered sanitized text -->
+              </div>
+            </div>
+
+            <!-- Tab 5: Guidance & Defense -->
+            <div id="tabGuidance" class="tab-pane">
+              <div id="guidanceContainer" class="guidance-grid">
+                <!-- Dynamically populated based on detected flags -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Mobile Bottom Quick Navigation -->
+  <nav class="mobile-nav-bar">
+    <button class="mob-btn active" id="mobNavInput">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+      </svg>
+      <span>Input</span>
+    </button>
+    <button class="mob-btn" id="mobNavScan">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+      </svg>
+      <span>Scan</span>
+    </button>
+    <button class="mob-btn" id="mobNavResults">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </svg>
+      <span>Results</span>
+    </button>
+  </nav>
+
+  <!-- Notification Toast -->
+  <div id="toastNotification" class="toast" role="alert" aria-live="polite"></div>
+
+  <!-- Scripts -->
+  <script src="samples.js"></script>
+  <script src="detector.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
